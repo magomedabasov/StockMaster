@@ -1,4 +1,4 @@
-package ru.abasov.StockMaster;
+package ru.abasov.stockmaster;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

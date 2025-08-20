@@ -1,0 +1,20 @@
+package ru.abasov.stockmaster.service;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import ru.abasov.stockmaster.entity.Product;
+import ru.abasov.stockmaster.repository.ProductRepository;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class DefaultProductService implements ProductService {
+
+    private final ProductRepository productRepository;
+
+    @Override
+    public List<Product> findAllProducts() {
+        return productRepository.findAll();
+    }
+}

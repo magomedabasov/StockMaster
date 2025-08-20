@@ -1,4 +1,4 @@
-package ru.abasov.StockMaster.entity;
+package ru.abasov.stockmaster.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
