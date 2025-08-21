@@ -2,6 +2,7 @@ package ru.abasov.stockmaster.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,6 +11,7 @@ import ru.abasov.stockmaster.controller.payload.UpdateProductPayload;
 import ru.abasov.stockmaster.entity.Product;
 import ru.abasov.stockmaster.service.ProductService;
 
+import java.util.Locale;
 import java.util.NoSuchElementException;
 
 /**
@@ -22,10 +24,12 @@ import java.util.NoSuchElementException;
 public class ProductController {
 
     private final ProductService productService;
+    private final MessageSource messageSource;
 
     @ModelAttribute("product")
     public Product product(@PathVariable("productId") int productId) {
-        return this.productService.findProduct(productId).orElseThrow(() -> new NoSuchElementException("Товар не найден"));
+        return this.productService.findProduct(productId)
+                .orElseThrow(() -> new NoSuchElementException("catalogue.errors.product.not_found"));
     }
 
     @GetMapping
@@ -51,9 +55,10 @@ public class ProductController {
     }
 
     @ExceptionHandler(NoSuchElementException.class)
-    public String handleNoSuchElementException(NoSuchElementException e, Model model, HttpServletResponse response) {
+    public String handleNoSuchElementException(NoSuchElementException e, Model model, HttpServletResponse response, Locale locale) {
         response.setStatus(HttpStatus.NOT_FOUND.value());
-        model.addAttribute("error", e.getMessage());
+        model.addAttribute("error",
+                this.messageSource.getMessage(e.getMessage(), new Object[0], e.getMessage(), locale));
         return "errors/404";
     }
 }
