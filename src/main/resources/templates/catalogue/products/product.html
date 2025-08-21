@@ -10,8 +10,8 @@
 <h1 data-th-text="${product.title}"></h1>
 <ul>
     <li><strong>ID</strong>: <span data-th-text="${product.id}"></span></li>
-    <li><strong>ID</strong>: <span data-th-text="${product.title}"></span></li>
-    <li><strong>ID</strong>: <span data-th-text="${product.details}"></span></li>
+    <li><strong>Title</strong>: <span data-th-text="${product.title}"></span></li>
+    <li><strong>Details</strong>: <span data-th-text="${product.details}"></span></li>
 </ul>
 <a data-th-href="@{/catalogue/products/{productId}/edit(productId=${product.id})}">
     <button type="button">Редактировать</button>
