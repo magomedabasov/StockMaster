@@ -1,11 +1,16 @@
 package ru.abasov.stockmaster.controller;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.abasov.stockmaster.controller.payload.UpdateProductPayload;
 import ru.abasov.stockmaster.entity.Product;
 import ru.abasov.stockmaster.service.ProductService;
+
+import java.util.NoSuchElementException;
 
 /**
  * Этот контроллер занимается обработкой запросов
@@ -20,7 +25,7 @@ public class ProductController {
 
     @ModelAttribute("product")
     public Product product(@PathVariable("productId") int productId) {
-        return this.productService.findProduct(productId).orElseThrow();
+        return this.productService.findProduct(productId).orElseThrow(() -> new NoSuchElementException("Товар не найден"));
     }
 
     @GetMapping
@@ -43,5 +48,12 @@ public class ProductController {
     public String deleteProduct(@ModelAttribute("product") Product product) {
         this.productService.deleteProduct(product.getId());
         return "redirect:/catalogue/products/list";
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    public String handleNoSuchElementException(NoSuchElementException e, Model model, HttpServletResponse response) {
+        response.setStatus(HttpStatus.NOT_FOUND.value());
+        model.addAttribute("error", e.getMessage());
+        return "errors/404";
     }
 }
