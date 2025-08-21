@@ -43,7 +43,8 @@ public class ProductController {
     }
 
     @PostMapping("edit")
-    public String updateProduct(@ModelAttribute("product") Product product, UpdateProductPayload payload) {
+    public String updateProduct(@ModelAttribute("product") Product product,
+                                UpdateProductPayload payload) {
         this.productService.updateProduct(product.getId(), payload.title(), payload.details());
         return "redirect:/catalogue/products/%d".formatted(product.getId());
     }
@@ -55,7 +56,10 @@ public class ProductController {
     }
 
     @ExceptionHandler(NoSuchElementException.class)
-    public String handleNoSuchElementException(NoSuchElementException e, Model model, HttpServletResponse response, Locale locale) {
+    public String handleNoSuchElementException(NoSuchElementException e,
+                                               Model model,
+                                               HttpServletResponse response,
+                                               Locale locale) {
         response.setStatus(HttpStatus.NOT_FOUND.value());
         model.addAttribute("error",
                 this.messageSource.getMessage(e.getMessage(), new Object[0], e.getMessage(), locale));

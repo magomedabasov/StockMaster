@@ -16,7 +16,7 @@
 <a data-th-href="@{/catalogue/products/{productId}/edit(productId=${product.id})}">
     <button type="button">Редактировать</button>
 </a>
-<form method="post" data-th-action="@{/catalogue/products/{productId}/edit(productId=${product.id})}">
+<form method="post" data-th-action="@{/catalogue/products/{productId}/delete(productId=${product.id})}">
     <button type="submit">Удалить</button>
 </form>
 </body>
