@@ -13,6 +13,11 @@
     <li><strong>ID</strong>: <span data-th-text="${product.title}"></span></li>
     <li><strong>ID</strong>: <span data-th-text="${product.details}"></span></li>
 </ul>
-
+<a data-th-href="@{/catalogue/products/{productId}/edit(productId=${product.id})}">
+    <button type="button">Редактировать</button>
+</a>
+<form method="post" data-th-action="@{/catalogue/products/{productId}/edit(productId=${product.id})}">
+    <button type="submit">Удалить</button>
+</form>
 </body>
 </html>
