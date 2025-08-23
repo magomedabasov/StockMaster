@@ -33,9 +33,9 @@ public class ProductsRestController {
 
     @PostMapping
     public ResponseEntity<?> createProduct(@Valid @RequestBody NewProductPayload payload,
-                                                 BindingResult bindingResult,
-                                                 UriComponentsBuilder uriBuilder,
-                                                 Locale locale) {
+                                           BindingResult bindingResult,
+                                           UriComponentsBuilder uriBuilder,
+                                           Locale locale) {
         if (bindingResult.hasErrors()) {
             ProblemDetail problemDetail = ProblemDetail
                     .forStatusAndDetail(HttpStatus.BAD_REQUEST,
