@@ -6,8 +6,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ru.abasov.manager.client.BadRequestException;
 import ru.abasov.manager.client.ProductsRestClient;
 import ru.abasov.manager.controller.payload.UpdateProductPayload;
 import ru.abasov.manager.entity.Product;
@@ -42,15 +42,14 @@ public class ProductController {
     @PostMapping("edit")
     public String updateProduct(@ModelAttribute(value = "product", binding = false) Product product,
                                 UpdateProductPayload payload,
-                                BindingResult bindingResult,
                                 Model model) {
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("payload", payload);
-            model.addAttribute("errors", bindingResult.getFieldErrors());
-            return "catalogue/products/edit";
-        } else {
-            this.productsRestClient.updateProduct(product.id(), payload.title(), payload.details());
+        try {
+            this.productsRestClient.updateProduct(product.id(), product.title(), product.details());
             return "redirect:/catalogue/products/%d".formatted(product.id());
+        } catch (BadRequestException exception) {
+            model.addAttribute("payload", payload);
+            model.addAttribute("errors", exception.getErrors());
+            return "catalogue/products/edit";
         }
     }
 
