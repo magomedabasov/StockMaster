@@ -40,11 +40,11 @@ public class ProductController {
     }
 
     @PostMapping("edit")
-    public String updateProduct(@ModelAttribute(value = "product", binding = false) Product product,
+    public String updateProduct(@ModelAttribute(name = "product", binding = false) Product product,
                                 UpdateProductPayload payload,
                                 Model model) {
         try {
-            this.productsRestClient.updateProduct(product.id(), product.title(), product.details());
+            this.productsRestClient.updateProduct(product.id(), payload.title(), payload.details());
             return "redirect:/catalogue/products/%d".formatted(product.id());
         } catch (BadRequestException exception) {
             model.addAttribute("payload", payload);

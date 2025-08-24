@@ -10,8 +10,7 @@
 <div data-th-if="${errors}">
     <h2>Допущены ошибки:</h2>
     <ul>
-        <li data-th-each="error : ${errors}"
-            data-th-text="|${error.field}: ${error.defaultMessage}|"></li>
+        <li data-th-each="error: ${errors}" data-th-text="${error}"></li>
     </ul>
 </div>
 <form method="post" data-th-action="@{/catalogue/products/create}">

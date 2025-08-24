@@ -77,7 +77,7 @@ public class RestClientProductsRestClient implements ProductsRestClient {
         try {
             this.restClient
                     .patch()
-                    .uri("/catalogue/products/{productId}", productId)
+                    .uri("/catalogue-api/products/{productId}", productId)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(new UpdateProductPayload(title, details))
                     .retrieve()

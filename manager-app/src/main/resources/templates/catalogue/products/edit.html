@@ -5,13 +5,12 @@
   <title>Редактирование товара [[${product.title}]]</title>
 </head>
 <body>
-<a data-th-href ="@{/catalogue/products/{productId}(productId=${product.id})}">&larr; К товару</a>
-<h1>Редактирование товара</h1>
+<a data-th-href="@{/catalogue/products/{productId}(productId=${product.id})}">&larr; К товару</a>
+<h1>Редактирование товара '[[${product.title}]]'</h1>
 <div data-th-if="${errors}">
   <h2>Допущены ошибки:</h2>
   <ul>
-    <li data-th-each="error : ${errors}"
-        data-th-text="|${error.field}: ${error.defaultMessage}|"></li>
+    <li data-th-each="error: ${errors}" data-th-text="${error}"></li>
   </ul>
 </div>
 <form method="post" data-th-action="@{/catalogue/products/{productId}/edit(productId=${product.id})}">
