@@ -47,7 +47,7 @@ public class RestClientProductsRestClient implements ProductsRestClient {
         try {
             return this.restClient
                     .post()
-                    .uri("/catalogue/products")
+                    .uri("/catalogue-api/products")
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(new NewProductPayload(title, details))
                     .retrieve()
