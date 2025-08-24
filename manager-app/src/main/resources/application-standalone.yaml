@@ -1,0 +1,7 @@
+server:
+  port: 8082
+
+stockmaster:
+  services:
+    catalogue:
+      uri: http://localhost:8081
