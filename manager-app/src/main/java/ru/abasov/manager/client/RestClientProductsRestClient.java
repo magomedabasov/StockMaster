@@ -15,7 +15,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public class ProductsRestClientImpl implements ProductsRestClient {
+public class RestClientProductsRestClient implements ProductsRestClient {
 
     /**
      * Специальная ссылка на тип, чтобы Spring мог правильно десериализовать
