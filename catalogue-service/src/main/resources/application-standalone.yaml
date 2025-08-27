@@ -10,3 +10,9 @@ spring:
     schemas:
       - public
       - catalogue
+  jpa:
+    show-sql: true
+
+logging:
+  level:
+    sql: info
