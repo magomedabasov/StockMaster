@@ -11,7 +11,6 @@ import ru.abasov.catalogue.controller.payload.NewProductPayload;
 import ru.abasov.catalogue.entity.Product;
 import ru.abasov.catalogue.service.ProductService;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController

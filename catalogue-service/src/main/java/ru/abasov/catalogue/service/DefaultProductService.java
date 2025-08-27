@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.abasov.catalogue.entity.Product;
 import ru.abasov.catalogue.repository.ProductRepository;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
