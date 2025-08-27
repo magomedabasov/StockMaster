@@ -2,6 +2,7 @@ package ru.abasov.catalogue.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.abasov.catalogue.entity.Product;
 import ru.abasov.catalogue.repository.ProductRepository;
 
@@ -21,6 +22,7 @@ public class DefaultProductService implements ProductService {
     }
 
     @Override
+    @Transactional
     public Product createProduct(String title, String details) {
         return this.productRepository.save(new Product(null, title, details));
     }
@@ -31,6 +33,7 @@ public class DefaultProductService implements ProductService {
     }
 
     @Override
+    @Transactional
     public void updateProduct(Integer id, String title, String details) {
         this.productRepository.findById(id).ifPresentOrElse(
                 product -> {
@@ -42,6 +45,7 @@ public class DefaultProductService implements ProductService {
     }
 
     @Override
+    @Transactional
     public void deleteProduct(Integer id) {
         this.productRepository.deleteById(id);
     }
