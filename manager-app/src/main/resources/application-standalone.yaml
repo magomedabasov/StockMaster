@@ -1,7 +1,10 @@
 server:
   port: 8082
 
+
 stockmaster:
   services:
     catalogue:
       uri: http://localhost:8081
+      username: catalogue_service_user
+      password: password
