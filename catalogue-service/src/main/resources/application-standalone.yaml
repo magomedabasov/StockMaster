@@ -12,7 +12,12 @@ spring:
       - catalogue
   jpa:
     show-sql: true
-
+  security:
+    user:
+      name: catalogue_service_user
+      password: password
+      roles:
+        - SERVICE
 logging:
   level:
     sql: info
