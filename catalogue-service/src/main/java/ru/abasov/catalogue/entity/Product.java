@@ -12,6 +12,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(schema = "catalogue", name = "t_product")
+@NamedQueries(
+        @NamedQuery(
+                name = "Product.findAllByTitleLikeIgnoringCase",
+                query = " select p from Product p where p.title ilike :filter"
+        )
+)
 public class Product {
 
     @Id
@@ -24,6 +30,6 @@ public class Product {
     private String title;
 
     @Column(name = "c_details")
-    @Size(max =1000)
+    @Size(max = 1000)
     private String details;
 }
