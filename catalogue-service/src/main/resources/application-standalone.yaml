@@ -12,12 +12,17 @@ spring:
       - catalogue
   jpa:
     show-sql: true
+    open-in-view: false
   security:
     user:
       name: catalogue_service_user
       password: password
       roles:
         - SERVICE
+  devtools:
+    livereload:
+      port: 35730
+
 logging:
   level:
     sql: info

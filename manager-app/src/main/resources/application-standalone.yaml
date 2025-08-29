@@ -6,5 +6,13 @@ stockmaster:
   services:
     catalogue:
       uri: http://localhost:8081
-      username: catalogue_service_user
-      password: password
+      user:
+        name: catalogue_service_user
+        password: password
+
+spring:
+  devtools:
+    livereload:
+      port: 35731
+  jpa:
+    open-in-view: false
