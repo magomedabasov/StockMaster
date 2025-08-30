@@ -3,7 +3,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/catalogue
+    url: jdbc:postgresql://172.20.10.4:5432/catalogue
     username: catalogue
     password: catalogue
   flyway:
