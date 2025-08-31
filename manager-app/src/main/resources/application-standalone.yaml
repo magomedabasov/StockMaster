@@ -6,13 +6,24 @@ stockmaster:
   services:
     catalogue:
       uri: http://localhost:8081
-      user:
-        name: catalogue_service_user
-        password: password
+      username: catalogue_service_user
+      password: password
 
 spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/manager
+    username: manager
+    password: manager
+  flyway:
+    schemas:
+      - public
+      - manager
+  jpa:
+    show-sql: true
+    open-in-view: false
   devtools:
     livereload:
       port: 35731
-  jpa:
-    open-in-view: false
+logging:
+  level:
+    sql: info
