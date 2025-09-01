@@ -30,7 +30,7 @@ public class StockMasterUser {
 
     // Указываем список прав которые доступны пользователю
     @ManyToMany
-    @JoinTable(schema = " user_management", name = "user_authority",
+    @JoinTable(schema = "user_management", name = "t_user_authority",
             joinColumns = @JoinColumn(name = "id_user"),
             inverseJoinColumns = @JoinColumn(name = "id_authority"))
     private List<Authority> authorities;
