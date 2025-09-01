@@ -4,7 +4,7 @@ CREATE TABLE user_management.t_user
 (
     id         serial PRIMARY KEY,
     c_username varchar NOT NULL CHECK ( LENGTH(TRIM(c_username)) > 0) UNIQUE,
-    c_password varchar NOT NULL CHECK ( LENGTH(TRIM(c_username)) > 0)
+    c_password varchar NOT NULL CHECK ( LENGTH(TRIM(c_password)) > 0)
 );
 
 CREATE TABLE user_management.t_authority
