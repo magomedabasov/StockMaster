@@ -14,11 +14,10 @@ spring:
     show-sql: true
     open-in-view: false
   security:
-    user:
-      name: catalogue_service_user
-      password: password
-      roles:
-        - SERVICE
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8082/realms/stockmaster
   devtools:
     livereload:
       port: 35730
