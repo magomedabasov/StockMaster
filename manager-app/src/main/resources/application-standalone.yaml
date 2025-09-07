@@ -1,5 +1,5 @@
 server:
-  port: 8082
+  port: 8080
 
 stockmaster:
   services:
@@ -23,7 +23,22 @@ spring:
   devtools:
     livereload:
       port: 35731
-
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8082/realms/stockmaster
+            user-name-attribute: preferred_username
+        registration:
+          keycloak:
+            client-id: manager-app
+            client-secret: 94xuZJmf5WazaX9YRb1Xy1Vc7Pj2h6F2
+            scope:
+              - openid
+              - view_catalogue
+              - edit_catalogue
+              - microprofile-jwt
 logging:
   level:
     sql: info
