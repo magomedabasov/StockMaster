@@ -3,9 +3,12 @@ package ru.abasov.manager.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.client.support.BasicAuthenticationInterceptor;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.web.client.RestClient;
 import ru.abasov.manager.client.RestClientProductsRestClient;
+import ru.abasov.manager.security.OAuthClientHttpRequestInterceptor;
 
 @Configuration
 public class ClientBeans {
@@ -13,13 +16,21 @@ public class ClientBeans {
     @Bean
     public RestClientProductsRestClient productsRestClient(
             @Value("${stockmaster.services.catalogue.uri:http://localhost:8081}") String catalogueBaseUri,
-            @Value("${stockmaster.services.catalogue.username:}") String catalogueUsername,
-            @Value("${stockmaster.services.catalogue.password:}") String cataloguePassword) {
+            @Value("${stockmaster.services.catalogue.registration-id:keycloak}") String registrationId,
+            ClientRegistrationRepository clientRegistrationRepository,
+            OAuth2AuthorizedClientRepository authorizedClientRepository) {
         return new RestClientProductsRestClient(RestClient.builder()
                 .baseUrl(catalogueBaseUri)
                 .requestInterceptor(
-                        new BasicAuthenticationInterceptor(catalogueUsername, cataloguePassword)
+                        new OAuthClientHttpRequestInterceptor(
+                                new DefaultOAuth2AuthorizedClientManager(
+                                        clientRegistrationRepository,
+                                        authorizedClientRepository
+                                ),
+                                registrationId
+                        )
                 )
-                .build());
+                .build()
+        );
     }
 }
