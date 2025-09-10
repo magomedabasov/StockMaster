@@ -9,7 +9,7 @@ stockmaster:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5433/manager
+    url: jdbc:postgresql://172.20.10.4:5433/manager
     username: manager
     password: manager
   jpa:
@@ -23,7 +23,7 @@ spring:
       client:
         provider:
           keycloak:
-            issuer-uri: http://localhost:8082/realms/stockmaster
+            issuer-uri: http://172.20.10.4:8082/realms/stockmaster
             user-name-attribute: preferred_username
         registration:
           keycloak:
