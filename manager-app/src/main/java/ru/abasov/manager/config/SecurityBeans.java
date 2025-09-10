@@ -36,7 +36,7 @@ public class SecurityBeans {
             List<SimpleGrantedAuthority> authorities = Optional.ofNullable(oidcUser.getClaimAsStringList("groups"))
                     .orElseGet(List::of)
                     .stream()
-                    .filter(role -> role.contains("ROLE_"))
+                    .filter(role -> role.startsWith("ROLE_"))
                     .map(SimpleGrantedAuthority::new)
                     .toList();
             return new DefaultOidcUser(authorities, oidcUser.getIdToken());
