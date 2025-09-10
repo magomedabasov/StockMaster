@@ -12,10 +12,6 @@ spring:
     url: jdbc:postgresql://localhost:5433/manager
     username: manager
     password: manager
-  flyway:
-    schemas:
-      - public
-      - user_management
   jpa:
     show-sql: true
     open-in-view: false
