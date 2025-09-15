@@ -1,13 +1,11 @@
 package ru.abasov.manager.controller;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.ui.ConcurrentModel;
 import org.springframework.ui.Model;
 import ru.abasov.manager.client.BadRequestException;
 import ru.abasov.manager.client.ProductsRestClient;
@@ -32,11 +30,8 @@ class ProductsControllerTest {
     @InjectMocks
     ProductsController controller;
 
-    @BeforeEach
-
-
     @Test
-    @DisplayName("createProduct создаёт новый товар и перенаправляет на его страницу")
+    @DisplayName("createProduct при валидном запросе создаёт новый товар и перенаправляет на его страницу")
     void createProduct_RequestIsValid_ReturnRedirectToProductPage() {
         // given
         String title = "Товар";
@@ -45,43 +40,43 @@ class ProductsControllerTest {
         var payload = new NewProductPayload(title, details);
         var createdProduct = new Product(1, title, details);
 
-        when(this.productsRestClient.createProduct(title, details))
+        when(this.productsRestClient.createProduct(payload.title(), payload.details()))
                 .thenReturn(createdProduct);
 
         // when
-        String result = this.controller.createProduct(payload, model);
+        String result = this.controller.createProduct(payload, this.model);
 
         // then
-        verify(productsRestClient).createProduct(title, details);
-        verifyNoMoreInteractions(productsRestClient);
-        verifyNoInteractions(model);
+        verify(this.productsRestClient).createProduct(payload.title(), payload.details());
+        verifyNoMoreInteractions(this.productsRestClient);
+        verifyNoInteractions(this.model);
 
         assertEquals("redirect:/catalogue/products/1", result);
-        System.out.println(model);
     }
 
     @Test
-    @DisplayName("createProduct возвращает страницу с ошибками при невалидном запросе")
+    @DisplayName("createProduct при невалидном запросе возвращает страницу с ошибками")
     void createProduct_RequestIsInvalid_ReturnProductFormWithErrors() {
         // given
 
         var payload = new NewProductPayload("   ", null);
-        var model = new ConcurrentModel();
+        List<String> expectedErrors = List.of("title is blank", "details is null");
 
-        doThrow(new BadRequestException(List.of("title is blank", "details is null")))
+        doThrow(new BadRequestException(expectedErrors))
                 .when(this.productsRestClient)
-                .createProduct("   ", null);
+                .createProduct(payload.title(), payload.details());
 
         // when
-        String result = this.controller.createProduct(payload, model);
+        String result = this.controller.createProduct(payload, this.model);
 
         // then
         assertEquals("catalogue/products/new_product", result);
-        assertEquals(payload, model.getAttribute("payload"));
-        assertEquals(List.of("title is blank", "details is null"), model.getAttribute("errors"));
 
-        verify(this.productsRestClient).createProduct("   ", null);
+        verify(this.model).addAttribute("errors", expectedErrors);
+        verify(this.model).addAttribute(eq("payload"), same(payload));
+        verify(this.productsRestClient).createProduct(payload.title(), payload.details());
         verifyNoMoreInteractions(this.productsRestClient);
+        verifyNoMoreInteractions(this.model);
 
     }
 
