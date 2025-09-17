@@ -5,8 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -15,12 +17,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
 class ProductsRestControllerIT {
 
     @Autowired
     MockMvc mockMvc;
 
     @Test
+    @Sql(value = "/sql/products.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     void findProducts_ReturnsProductsList() throws Exception {
         //given
         var mockHttpServletRequestBuilder = MockMvcRequestBuilders.get("catalogue-api/products")
