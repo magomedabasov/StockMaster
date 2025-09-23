@@ -15,9 +15,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
-@Transactional
 class ProductsRestControllerIT {
 
     @Autowired
@@ -27,7 +27,7 @@ class ProductsRestControllerIT {
     @Sql(value = "/sql/products.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     void findProducts_ReturnsProductsList() throws Exception {
         //given
-        var mockHttpServletRequestBuilder = MockMvcRequestBuilders.get("catalogue-api/products")
+        var mockHttpServletRequestBuilder = MockMvcRequestBuilders.get("/catalogue-api/products")
                 .param("filter", "товар")
                 .with(jwt().jwt(builder -> builder.claim("scope", "view_catalogue")));
 
