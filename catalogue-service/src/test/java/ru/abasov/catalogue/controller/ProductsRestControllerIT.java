@@ -4,16 +4,18 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Locale;
+
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Transactional
 @SpringBootTest
@@ -34,7 +36,7 @@ class ProductsRestControllerIT {
         //when
         mockMvc.perform(mockHttpServletRequestBuilder)
 
-        //then
+                //then
                 .andDo(print())
                 .andExpectAll(
                         status().isOk(),
@@ -47,5 +49,63 @@ class ProductsRestControllerIT {
                                 """
                         )
                 );
+    }
+
+    @Test
+    void createProduct_RequestIsValid_ReturnsNewProduct() throws Exception {
+        //given
+        var mockHttpServletRequestBuilder = MockMvcRequestBuilders.post("/catalogue-api/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {"title":  "Новый товар", "details": "Описание нового товара"}
+                        """)
+                .with(jwt().jwt(builder -> builder.claim("scope", "edit_catalogue")));
+
+        //when
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                //then
+                .andDo(print())
+                .andExpectAll(
+                        status().isCreated(),
+                        header().string(HttpHeaders.LOCATION, "http://localhost/catalogue-api/products/1"),
+                        content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON),
+                        content().json(
+                                """
+                                        {
+                                            "id": 1,
+                                            "title":  "Новый товар",
+                                            "details": "Описание нового товара"
+                                        }
+                                        """));
+    }
+
+    @Test
+    void createProduct_RequestIsInvalid_ReturnsProblemDetail() throws Exception {
+        //given
+        var mockHttpServletRequestBuilder = MockMvcRequestBuilders.post("/catalogue-api/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .locale(new Locale("ru", "RU"))
+                .content("""
+                        {
+                            "title":  "  ", "details": null
+                        }
+                        """)
+                .with(jwt().jwt(builder -> builder.claim("scope", "edit_catalogue")));
+
+        //when
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                //then
+                .andDo(print())
+                .andExpectAll(
+                        status().isBadRequest(),
+                        content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON),
+                        content().json(
+                                """
+                                        {
+                                            "errors": [
+                                            "Название товара должно быть от 3 до 50 символов"
+                                            ]
+                                        }
+                                        """));
     }
 }
