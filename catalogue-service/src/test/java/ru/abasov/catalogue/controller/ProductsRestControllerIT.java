@@ -108,4 +108,25 @@ class ProductsRestControllerIT {
                                         }
                                         """));
     }
+
+    @Test
+    void createProduct_UserIsNotAuthorized_ReturnsForbidden() throws Exception {
+        //given
+        var mockHttpServletRequestBuilder = MockMvcRequestBuilders.post("/catalogue-api/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .locale(new Locale("ru", "RU"))
+                .content("""
+                        {
+                            "title":  "im not", "details": "authorized"
+                        }
+                        """)
+                .with(jwt().jwt(builder -> builder.claim("scope", "view_catalogue")));
+
+        //when
+        mockMvc.perform(mockHttpServletRequestBuilder)
+                //then
+                .andDo(print())
+                .andExpectAll(
+                        status().isForbidden());
+    }
 }
