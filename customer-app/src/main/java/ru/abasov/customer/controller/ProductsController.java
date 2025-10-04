@@ -12,12 +12,13 @@ import ru.abasov.customer.client.ProductsClient;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("customer/products")
-public class CustomerController {
+public class ProductsController {
 
     private final ProductsClient productsClient;
 
     @GetMapping("list")
     public Mono<String> getProductsListPage(Model model, @RequestParam(name = "filter", required = false) String filter) {
+        model.addAttribute("filter", filter);
         return this.productsClient.findAllProducts(filter)
                 .collectList()
                 .doOnNext(products -> model.addAttribute("products", products))
