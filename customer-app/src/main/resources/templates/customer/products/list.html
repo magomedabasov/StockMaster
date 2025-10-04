@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Список товаров</title>
+</head>
+<body>
+<h1>Список товаров</h1>
+<ul>
+    <li data-th-each="product: ${products}">
+        <p data-th-text="${product.id}"></p>
+        <strong>
+            <a data-th-text="${product.title}"
+               data-th-href="@{/customer/products/{productId}(productId=${product.id})}"></a>
+        </strong>
+        <p data-th-text="${product.details}"></p>
+    </li>
+</ul>
+</body>
+</html>
