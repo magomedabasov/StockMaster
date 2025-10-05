@@ -6,8 +6,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 import ru.abasov.customer.client.ProductsClient;
+import ru.abasov.customer.controller.payload.NewProductReviewPayload;
 import ru.abasov.customer.entity.Product;
 import ru.abasov.customer.service.FavouriteProductService;
+import ru.abasov.customer.service.ProductReviewService;
 
 @Controller
 @RequiredArgsConstructor
@@ -18,6 +20,8 @@ public class ProductController {
 
     private final FavouriteProductService favouriteProductService;
 
+    private final ProductReviewService productReviewService;
+
     @ModelAttribute(name = "product", binding = false)
     public Mono<Product> loadProduct(@PathVariable("productId") int productId) {
         return this.productsClient.findProduct(productId);
@@ -27,8 +31,12 @@ public class ProductController {
     @GetMapping
     public Mono<String> getProductPage(@PathVariable("productId") int productId, Model model) {
         model.addAttribute("inFavourite", false);
-        return this.favouriteProductService.findFavouriteProductByProduct(productId)
-                .doOnNext(favouriteProduct -> model.addAttribute("inFavourite", true))
+        return this.productReviewService.findAllByProductId(productId)
+                .collectList()
+                .doOnNext(productReviews -> model.addAttribute("reviews", productReviews))
+                .then(this.favouriteProductService.findFavouriteProductByProduct(productId)
+                        .doOnNext(favouriteProduct -> model.addAttribute("inFavourite", true)))
+
                 .thenReturn("customer/products/product");
     }
 
@@ -49,5 +57,10 @@ public class ProductController {
                         .thenReturn("redirect:/customer/products/%d".formatted(productId)));
     }
 
-
+    @PostMapping("create-review")
+    public Mono<String> createReview(@PathVariable("productId") int productId,
+                                     NewProductReviewPayload payload) {
+        return this.productReviewService.save(productId, payload.rating(), payload.review())
+                .thenReturn("redirect:/customer/products/%d".formatted(productId));
+    }
 }
