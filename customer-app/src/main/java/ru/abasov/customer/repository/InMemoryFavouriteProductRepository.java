@@ -31,4 +31,9 @@ public class InMemoryFavouriteProductRepository implements FavouriteProductRepos
                 .filter(favouriteProduct -> favouriteProduct.getProductId() == productId)
                 .singleOrEmpty();
     }
+
+    @Override
+    public Flux<FavouriteProduct> findAllFavouriteProducts() {
+        return Flux.fromIterable(this.favouriteProducts);
+    }
 }

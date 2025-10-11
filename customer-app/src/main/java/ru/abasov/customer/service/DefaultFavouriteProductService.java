@@ -2,6 +2,7 @@ package ru.abasov.customer.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.abasov.customer.entity.FavouriteProduct;
 import ru.abasov.customer.repository.FavouriteProductRepository;
@@ -27,5 +28,10 @@ public class DefaultFavouriteProductService implements FavouriteProductService {
     @Override
     public Mono<FavouriteProduct> findFavouriteProductByProduct(int productId) {
         return this.favouriteProductRepository.findByProductId(productId);
+    }
+
+    @Override
+    public Flux<FavouriteProduct> findAllFavouriteProducts() {
+        return this.favouriteProductRepository.findAllFavouriteProducts();
     }
 }

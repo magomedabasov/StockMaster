@@ -5,8 +5,8 @@
     <title>Список товаров</title>
 </head>
 <body>
-<a data-th-href="@{/customer/products/favourites}">Избранные товары</a>
-<h1>Список товаров</h1>
+<a data-th-href="@{/customer/products/list}">Все товары</a>
+<h1>Избранные товары</h1>
 <form>
     <label>Фильтр:
         <input type="text" name="filter" data-th-value="${filter}">
@@ -15,12 +15,14 @@
 </form>
 <ul>
     <li data-th-each="product: ${products}">
-        <p data-th-text="${product.id}"></p>
         <strong>
             <a data-th-text="${product.title}"
                data-th-href="@{/customer/products/{productId}(productId=${product.id})}"></a>
         </strong>
         <p data-th-text="${product.details}"></p>
+        <form method="post" data-th-action="@{/customer/products/{productId}/remove-from-favourites(productId=${product.id})}">
+            <button type="submit">Удалить из избранного</button>
+        </form>
     </li>
 </ul>
 </body>
