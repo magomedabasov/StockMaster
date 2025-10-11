@@ -23,13 +23,13 @@
 - **REST API** для взаимодействия с данными
 - Работа с **PostgreSQL** через Spring Data JPA и Flyway
 - Валидация входных данных и обработка ошибок
+- Модульное и интеграционное тестирование с `@SpringBootTest`, Testcontainers и WireMock
+- Переход на реактивную архитектуру с **Spring WebFlux** и **Project Reactor**
 
 ---
 
 ## 🚀 Что в планах
 
-- Модульное и интеграционное тестирование с `@SpringBootTest`, Testcontainers и WireMock
-- Переход на реактивную архитектуру с **Spring WebFlux** и **Project Reactor**
 - Работа с **MongoDB** через Spring Data Reactive
 - Безопасность в реактивных приложениях: OAuth 2.0 и OpenID Connect
 - Автоматическое документирование API с **OpenAPI (Springdoc)** и Swagger UI

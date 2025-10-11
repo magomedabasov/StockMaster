@@ -12,7 +12,8 @@
 	<modules>
 		<module>catalogue-service</module>
 		<module>manager-app</module>
-	</modules>
+        <module>customer-app</module>
+    </modules>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
