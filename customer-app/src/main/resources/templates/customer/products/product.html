@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>[[${product.title}]]</title>
+    <style>
+        .text-danger { color: red; font-size: 0.9em; }
+    </style>
 </head>
 <body>
 <a data-th-href="@{/customer/products/list}">К списку товаров</a>
@@ -12,11 +15,16 @@
       data-th-if="${!inFavourite}">
     <button type="submit">Добавить в избранное</button>
 </form>
-<form method="post" data-th-action="@{/customer/products/{productId}/delete-from-favourites(productId=${product.id})}"
+<form method="post" data-th-action="@{/customer/products/{productId}/remove-from-favourites(productId=${product.id})}"
       data-th-if="${!!inFavourite}">
     <button type="submit">Удалить из избранного</button>
 </form>
 <h2>Отзывы</h2>
+<div data-th-if="${errors}" class="text-danger">
+    <ul>
+        <li data-th-each="error : ${errors}" data-th-text="${error}"></li>
+    </ul>
+</div>
 <form method="post" data-th-action="@{/customer/products/{productId}/create-review(productId=${product.id})}">
     <label><input type="radio" name="rating" value="1">1</label>
     <label><input type="radio" name="rating" value="2">2</label>

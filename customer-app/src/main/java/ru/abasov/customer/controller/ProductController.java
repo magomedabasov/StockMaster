@@ -1,8 +1,11 @@
 package ru.abasov.customer.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 import ru.abasov.customer.client.ProductsClient;
@@ -10,6 +13,8 @@ import ru.abasov.customer.controller.payload.NewProductReviewPayload;
 import ru.abasov.customer.entity.Product;
 import ru.abasov.customer.service.FavouriteProductService;
 import ru.abasov.customer.service.ProductReviewService;
+
+import java.util.NoSuchElementException;
 
 @Controller
 @RequiredArgsConstructor
@@ -24,19 +29,23 @@ public class ProductController {
 
     @ModelAttribute(name = "product", binding = false)
     public Mono<Product> loadProduct(@PathVariable("productId") int productId) {
-        return this.productsClient.findProduct(productId);
+        return this.productsClient.findProduct(productId)
+                .switchIfEmpty(Mono.error(new NoSuchElementException("customer.products.error.not_found")));
 
+    }
+
+    @ModelAttribute("inFavourite")
+    public Mono<Boolean> loadInFavourite(@PathVariable("productId") int productId) {
+        return this.favouriteProductService.findFavouriteProductByProduct(productId)
+                .map(fav -> true)
+                .defaultIfEmpty(false);
     }
 
     @GetMapping
     public Mono<String> getProductPage(@PathVariable("productId") int productId, Model model) {
-        model.addAttribute("inFavourite", false);
         return this.productReviewService.findAllByProductId(productId)
                 .collectList()
                 .doOnNext(productReviews -> model.addAttribute("reviews", productReviews))
-                .then(this.favouriteProductService.findFavouriteProductByProduct(productId)
-                        .doOnNext(favouriteProduct -> model.addAttribute("inFavourite", true)))
-
                 .thenReturn("customer/products/product");
     }
 
@@ -49,8 +58,8 @@ public class ProductController {
                         .thenReturn("redirect:/customer/products/%d".formatted(productId)));
     }
 
-    @PostMapping("delete-from-favourites")
-    public Mono<String> deleteProductFromFavourites(@ModelAttribute("product") Mono<Product> productMono) {
+    @PostMapping("remove-from-favourites")
+    public Mono<String> removeProductFromFavourites(@ModelAttribute("product") Mono<Product> productMono) {
         return productMono
                 .map(Product::id)
                 .flatMap(productId -> this.favouriteProductService.removeProductFromFavourite(productId)
@@ -59,8 +68,25 @@ public class ProductController {
 
     @PostMapping("create-review")
     public Mono<String> createReview(@PathVariable("productId") int productId,
-                                     NewProductReviewPayload payload) {
-        return this.productReviewService.save(productId, payload.rating(), payload.review())
-                .thenReturn("redirect:/customer/products/%d".formatted(productId));
+                                     @Valid NewProductReviewPayload payload,
+                                     BindingResult bindingResult,
+                                     Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("payload", payload);
+            model.addAttribute("errors", bindingResult.getAllErrors().stream()
+                    .map(ObjectError::getDefaultMessage)
+                    .peek(System.out::println)
+                    .toList());
+            return Mono.just("customer/products/product");
+        } else {
+            return this.productReviewService.save(productId, payload.rating(), payload.review())
+                    .thenReturn("redirect:/customer/products/%d".formatted(productId));
+        }
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    public String handleNoSuchElementException(NoSuchElementException e, Model model) {
+        model.addAttribute("error", e.getMessage());
+        return "errors/404";
     }
 }
